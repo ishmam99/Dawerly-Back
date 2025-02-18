@@ -26,45 +26,54 @@ class TechnicianResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
+                // Forms\Components\TextInput::make('email')
+                //     ->email()
+                //     ->required()
+                //     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
-                    ->tel()
+                    
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
-                 
+
                     ->required(),
-                // Forms\Components\TextInput::make('user_id')
-                //     ->required()
-                //     ->numeric(),
-                Forms\Components\Select::make('province_id')
-                ->relationship('province', 'name')
-                ->preload()
-                    ->required()
-                    ->searchable(),
+
+
+
                 Forms\Components\Select::make('category_id')
                 ->relationship('category', 'name')
                 ->preload()
                     ->required()
                 ->searchable(),
-                Forms\Components\TextInput::make('status')
+                Forms\Components\Select::make('status')
                     ->required()
-                    ->maxLength(255)
-                    ->default(0),
-            Forms\Components\Repeater::make('subCategories')
+                    ->options([
+                        'active' => 'Active',
+                        'pending' => 'Pending'
+                    ])
+                    ->default('active'),
+            Forms\Components\Repeater::make('provinces')
             ->relationship()
+                ->schema([
+                    Forms\Components\Select::make('province_id')
+                        ->relationship('province', 'name')
+                        ->preload()
+                        ->required(),
+                    // ...
+                ])->columnSpan(2),
+            Forms\Components\Repeater::make('subCategories')
+            ->relationship('subCategories')
                 ->schema([
                 Forms\Components\Select::make('sub_category_id')
                     ->relationship('subCategory', 'name')
-                    ->required(),
-                    // ...
-                ])
+                    ->preload()
+                    ->required()
+                    ->searchable(),
+                ])->columnSpan(2),
+
             ]);
     }
 
@@ -74,8 +83,7 @@ class TechnicianResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('email') ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
@@ -84,11 +92,11 @@ class TechnicianResource extends Resource
                 Tables\Columns\TextColumn::make('user_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('province_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('provinces_count')
+                     ->counts('provinces')->label('Provinces')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('category_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('category.name')
+
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->searchable(),

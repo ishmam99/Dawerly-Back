@@ -16,6 +16,8 @@ class TechnicianResource extends JsonResource
     {
         return [
             'id'    => $this->id,
+            'user_id'    => $this->user_id,
+            'status'    => $this->status,
             'name'    => $this->name,
             'phone'    => $this->phone,
             'about'    => $this->about,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Technician;
 use App\Http\Requests\StoreTechnicianRequest;
 use App\Http\Requests\UpdateTechnicianRequest;
+use App\Http\Resources\TechnicianResource;
 
 class TechnicianController extends Controller
 {
@@ -29,7 +30,7 @@ class TechnicianController extends Controller
      */
     public function show(Technician $technician)
     {
-        //
+        return response()->json(TechnicianResource::make($technician));
     }
 
     /**

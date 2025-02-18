@@ -30,7 +30,7 @@ class SubCategoryController extends Controller
      */
     public function show($slug)
     {
-        $subCategory = SubCategory::where('slug', $slug)->with('category')->first();
+        $subCategory = SubCategory::where('slug', $slug)->with('category','technicians')->first();
         return response()->json(SubCategoryResource::make($subCategory));
     }
 

@@ -25,9 +25,13 @@ class Technician extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
 
-    public function subCategories(): BelongsToMany
+    public function subCategoriess(): BelongsToMany
     {
         return $this->belongsToMany(SubCategory::class, 'technician_sub_categories','technician_id', 'sub_category_id' );
+    }
+    public function subCategories()
+    {
+        return $this->hasMany(TechnicianSubCategory::class );
     }
     /**
      * Get the category that owns the Technician
@@ -43,8 +47,12 @@ class Technician extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function province(): BelongsTo
+    public function provincess()
     {
-        return $this->belongsTo(Provinces::class);
+        return $this->belongsToMany(Provinces::class, 'technician_provinces', 'technician_id', 'province_id');
+    }
+    public function provinces()
+    {
+        return $this->hasMany(TechnicianProvince::class);
     }
 }

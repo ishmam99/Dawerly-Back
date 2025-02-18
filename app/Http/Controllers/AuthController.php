@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
+use App\Models\TechnicianProvince;
 use App\Models\TechnicianSubCategory;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -24,53 +25,81 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        //   DB::beginTransaction();
-        // try{
-        $validatedData = $request->validate([
-            'email' => 'nullable|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'name' => 'required|string|max:255',
-            'image' => 'required:string',
-            'phone' => 'required',
-        ]);
-        $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['role'] = 'technician';
-
-        $user = User::create($validatedData);
-        $user->technician()->create([
-            'name' => $user->name,
-            'phone' => $user->phone,
-            'address' => $request->address,
-            'about' => $request->about,
-            'email' => $request->email,
-            'status' => 'pending',
-            'image' => uploadFile(  $validatedData['image'], 'images', true),
-            'about' => $request->about,
-            'province_id' => $request->province_id,
-            'category_id' => $request->category_id,
-
-        ]);
-         $sub_categories = $request->input('sub_categories');
-      if(is_array($sub_categories)
-      ){
-        foreach ($sub_categories as $sub_category_id) {
-            TechnicianSubCategory::create([
-                'technician_id' => $user->technician->id,
-                'sub_category_id' => $sub_category_id,
-                'status' => 'pending',
-            ]);
-        }
-        }
 
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['user' => UserResource::make($user), 'token' => $token]);
-    // }
-    // catch (\Exception $e) {
-    //     DB::rollback();
-    //     return response()->json(['message' => 'Registration failed','errpr'=>$e], 500);
-    // }
-}
+
+        return DB::transaction(function () use ($request) {
+            try {
+                // Validate the request data
+                $validatedData = $request->validate([
+                    'email' => 'nullable|string|email|max:255|unique:users',
+                    'password' => 'required|string|min:8',
+                    'name' => 'required|string|max:255',
+                    'image' => 'required|string', // Assuming base64 or file path
+                    'phone' => 'required|string|unique:users,phone',
+                ]);
+
+                // Hash password
+                $validatedData['password'] = Hash::make($validatedData['password']);
+                $validatedData['role'] = 'technician';
+
+                // Create user
+                $user = User::create($validatedData);
+
+                // Create technician profile
+                $technician = $user->technician()->create([
+                    'name' => $user->name,
+                    'phone' => $user->phone,
+                    'address' => $request->address,
+                    'email' => $request->email,
+                    'status' => 'pending',
+                    'image' => uploadFile($validatedData['image'], 'images', true),
+                    'about' => $request->about,
+                    'category_id' => $request->category_id,
+                ]);
+
+                $subCategories = collect($request->all())
+                ->filter(fn($value, $key) => str_starts_with($key, 'sub_categories_'))
+                ->values()
+                ->toArray();
+                if (!empty($subCategories)) {
+
+                        collect($subCategories)->map(fn($id) =>
+                            TechnicianSubCategory::create([
+                                'technician_id' => $technician->id,
+                            'sub_category_id' => $id,
+                            'status' => 'pending',
+                        ])
+                    );
+                }
+
+                // Handle provinces
+                $provinces = collect($request->all())
+                ->filter(fn($value, $key) => str_starts_with($key, 'provinces_'))
+                ->values()
+                ->toArray();
+                if (!empty($provinces)) {
+                    collect($provinces)->map(fn($id) =>
+                            TechnicianProvince::create([
+                                'technician_id' => $technician->id,
+                            'province_id' => $id,
+                            'status' => 'pending',
+                            ])
+                        );
+                }
+
+                // Generate authentication token
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+                return response()->json([
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                ], 201);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Registration failed', 'error' => $e->getMessage()], 500);
+            }
+        });
+    }
 
     /**
      * Login a user.
@@ -81,7 +110,7 @@ class AuthController extends Controller
             'phone' => 'required|string|max:255',
             'password' => 'required|string',
         ]);
-
+     
         if (!Auth::attempt($validatedData)) {
             return response()->json(['message' => 'User not found or wrong password'], 404);
         }
