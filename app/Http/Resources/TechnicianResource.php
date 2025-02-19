@@ -23,7 +23,8 @@ class TechnicianResource extends JsonResource
             'about'    => $this->about,
             'address'    => $this->address,
             'image'    => setImage($this->image),
-             'province'    => $this->province,
+             'provinces'    => $this->provinces,
+            'provincess'    => $this->provincess,
              'category'    => $this->category,
              'sub_categories'    => $this->subCategories
         ];
