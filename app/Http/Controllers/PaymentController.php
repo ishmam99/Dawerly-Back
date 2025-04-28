@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\Technician;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -29,8 +30,10 @@ class PaymentController extends Controller
             "Currency" => "KWD",
             "CustomerName" => $request->name,
             "CustomerEmail" => $request->email,
-            "CustomerMobile" => $request->phone,
+            "CustomerMobile" => auth()->user()->phone,
             "CustomerReference" => auth()->user()->id,
+            // "CallBackUrl" => 'http://localhost:5173/success',
+            // "ErrorUrl" => 'http://localhost:5173/cancelled',
             "CallBackUrl" => 'https://dawarlykw.net/success',
             "ErrorUrl" => 'https://dawarlykw.net/cancelled',
             "Language" => "en",
@@ -85,8 +88,10 @@ class PaymentController extends Controller
                 'payment_type' => $paymentStatus['Data']['InvoiceTransactions'][0]['PaymentGateway'],
                 'payment_status' => $paymentStatus['Data']['InvoiceStatus'],
             ]);
+            $valid_till  = $paymentStatus['Data']['InvoiceValue'] == 10 ? Carbon::now()->addDays(365) : Carbon::now()->addDays(180);
+            // return response()->json($valid_till);
           $technician =  Technician::where('user_id',$user->id)->first();
-          $technician->update(['status' => 'active']);
+          $technician->update(['status' => 'active','valid_till'=> $valid_till]);
             return response()->json(['st'=>$paymentStatus,'user' =>  $technician,'sfd'=>$user]);
             return redirect('/payment-success');
         } else {

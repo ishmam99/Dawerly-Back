@@ -31,7 +31,7 @@ class TechnicianResource extends Resource
                 //     ->required()
                 //     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
-                    
+
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('address')
@@ -100,6 +100,10 @@ class TechnicianResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('valid_till')
+                    ->dateTime()
+                    ->sortable()
+                   ,
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
