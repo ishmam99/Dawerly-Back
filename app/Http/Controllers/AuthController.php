@@ -35,7 +35,7 @@ class AuthController extends Controller
                     'email' => 'nullable|string|email|max:255|unique:users',
                     'password' => 'required|string|min:8',
                     'name' => 'required|string|max:255',
-                    'image' => 'required|string', // Assuming base64 or file path
+                    'image' => 'required', // Assuming base64 or file path
                     'phone' => 'required|string|unique:users,phone',
                 ]);
 
@@ -110,7 +110,7 @@ class AuthController extends Controller
             'phone' => 'required|string|max:255',
             'password' => 'required|string',
         ]);
-     
+
         if (!Auth::attempt($validatedData)) {
             return response()->json(['message' => 'User not found or wrong password'], 404);
         }

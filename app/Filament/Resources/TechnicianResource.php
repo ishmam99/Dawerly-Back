@@ -34,9 +34,14 @@ class TechnicianResource extends Resource
 
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('address')
+                Forms\Components\Textarea::make('address')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Textarea::make('about')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\DatePicker::make('valid_till')
+                   ,
                 Forms\Components\FileUpload::make('image')
 
                     ->required(),

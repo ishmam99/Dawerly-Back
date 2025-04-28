@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,8 +26,11 @@ class TechnicianResource extends JsonResource
             'image'    => setImage($this->image),
              'provinces'    => $this->provinces,
             'provincess'    => $this->provincess,
+            'rating'    => number_format($this->reviews()->sum('rating') / $this->reviews()->count(), 1),
+                 'reviews'    => $this->reviews,
              'category'    => $this->category,
-             'sub_categories'    => $this->subCategories
+             'valid_till'   =>Carbon::parse($this->valid_till)->format('Y-m-d'),
+             'sub_categories'    => $this->subCategories->load('subCategory')
         ];
     }
 }

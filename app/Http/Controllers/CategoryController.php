@@ -32,7 +32,10 @@ class CategoryController extends Controller
     public function show($slug)
     {
         $category = Category::where('slug', $slug)->with('subCategories')->first();
+        if($category)
         return response()->json(CategoryResource::make($category));
+        else 
+        return response()->json(['message'=>'Category not found'],404);
     }
 
     /**

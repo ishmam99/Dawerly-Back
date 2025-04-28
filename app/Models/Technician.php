@@ -55,4 +55,8 @@ class Technician extends Model
     {
         return $this->hasMany(TechnicianProvince::class);
     }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

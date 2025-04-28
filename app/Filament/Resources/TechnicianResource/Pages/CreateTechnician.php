@@ -14,7 +14,7 @@ class CreateTechnician extends CreateRecord
     {
         $user = User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            // 'email' => $data['email'],
             'phone' => $data['phone'],
             'password' => bcrypt('password'),
             'role' => 'technician',

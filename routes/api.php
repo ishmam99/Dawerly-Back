@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MyFatoorahController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProvincesController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,7 +33,11 @@ Route::prefix('v1')->group(
     Route::get('/category/{slug}', [CategoryController::class, 'show']);
     Route::get('/subcategory/{slug}', [SubCategoryController::class, 'show']);
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
+Route::post('/add-review', [ReviewController::class, 'store']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::get('technicians/{technician}', [\App\Http\Controllers\TechnicianController::class, 'show']);
+Route::get('blogs', [BlogController::class, 'index']);
+Route::get('blogs/{blog}', [BlogController::class, 'show']);
+Route::get('images', [BlogController::class, 'images']);
 Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store']);
 });
