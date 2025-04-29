@@ -26,7 +26,7 @@ class TechnicianResource extends JsonResource
             'image'    => setImage($this->image),
              'provinces'    => $this->provinces,
             'provincess'    => $this->provincess,
-            'rating'    => number_format($this->reviews()->sum('rating') / $this->reviews()->count() != 0 ? $this->reviews()->count() : 1  , 1),
+            'rating'    => $this->reviews()->count() > 0 ? number_format($this->reviews()->sum('rating') / $this->reviews()->count()  , 1) : 0,
                  'reviews'    => $this->reviews,
              'category'    => $this->category,
              'valid_till'   =>Carbon::parse($this->valid_till)->format('Y-m-d'),
