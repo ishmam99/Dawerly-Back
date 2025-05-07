@@ -239,4 +239,21 @@ class AuthController extends Controller
             ], 400);
         }
     }
+    public function deleteAccount(Request $request)
+    {
+        $user = $request->user();
+
+        // Delete associated technician if exists
+        if ($user->technician) {
+            $user->technician->delete();
+        }
+
+        // Delete the user
+        $user->delete();
+
+        // Clear authentication
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Account and associated data deleted successfully.']);
+    }
 }

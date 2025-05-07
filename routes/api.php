@@ -27,6 +27,7 @@ Route::prefix('v1')->group(
             Route::get('/getPaymentMethods', [PaymentController::class, 'getPaymentMethods']);
             Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment']);
             Route::post('/payment/callback', [PaymentController::class, 'paymentCallback']);
+            Route::post('/delete-account', [AuthController::class, 'deleteAccount']);
     });
     Route::get('/provinces', [ProvincesController::class, 'index']);
     Route::get('/categories', [CategoryController::class, 'index']);
