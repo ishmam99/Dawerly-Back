@@ -95,6 +95,7 @@ class PaymentController extends Controller
             return response()->json(['st'=>$paymentStatus,'user' =>  $technician,'sfd'=>$user]);
             return redirect('/payment-success');
         } else {
+            return response()->json(['st'=>$paymentStatus]);
             return redirect('/payment-failed');
         }
     }
