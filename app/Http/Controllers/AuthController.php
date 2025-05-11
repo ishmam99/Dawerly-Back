@@ -50,7 +50,7 @@ class AuthController extends Controller
                 $technician = $user->technician()->create([
                     'name' => $user->name,
                     'phone' => $user->phone,
-                    'address' => $request->address,
+                    'address' => $request->address || '',
                     'email' => $request->email,
                     'status' => 'pending',
                     'image' => uploadFile($validatedData['image'], 'images', true),
