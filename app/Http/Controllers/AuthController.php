@@ -45,7 +45,7 @@ class AuthController extends Controller
 
                 // Create user
                 $user = User::create($validatedData);
-
+                // dd($request->hasFile('image'), uploadFile($request->file('image'), 'images', false));
                 // Create technician profile
                 $technician = $user->technician()->create([
                     'name' => $user->name,
@@ -53,8 +53,7 @@ class AuthController extends Controller
                     'address' => $request->address || '',
                     'email' => $request->email,
                     'status' => 'pending',
-                    'image' => uploadFile($validatedData['image'], 'images', true),
-                    'about' => $request->about,
+                    'image' => $request->hasFile('image') ? uploadFile($request->file('image'), 'images', false) : uploadFile($validatedData['image'], 'images', true),                    'about' => $request->about,
                     'category_id' => $request->category_id,
                 ]);
 

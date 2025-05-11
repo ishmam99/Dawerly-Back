@@ -445,6 +445,7 @@ if (!function_exists('getIcon')) {
 // }
 function uploadFile($file, $folder = '/', $isBase64 = false): ?string
 {
+    // dd($isBase64);
     if (!$file) {
         return null;
     }
@@ -461,6 +462,7 @@ function uploadFile($file, $folder = '/', $isBase64 = false): ?string
         return $filePath;
     } else {
         // Handle regular file upload
+        // dd($file);
         $imageName = Str::random(40) . '.' . $file->getClientOriginalExtension();
         return $file->storeAs($folder, $imageName, 'public');
     }
