@@ -19,6 +19,10 @@ Route::get('/payment/callback', [PaymentController::class, 'paymentCallback']);
 Route::prefix('v1')->group(
     function () {
  Route::post('/register', [AuthController::class, 'register']);
+        Route::get('/payment-settings', function(){
+            return response()->json(['payment'=>false],200);
+        });
+    
     Route::post('/login', [AuthController::class, 'login'])->middleware('guest'); // Added middleware('guest') to allow unauthenticated access
 
     Route::group(['middleware'=>'auth:sanctum'] ,function () {
