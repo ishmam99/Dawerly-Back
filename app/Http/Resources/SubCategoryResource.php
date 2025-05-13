@@ -20,7 +20,7 @@ class SubCategoryResource extends JsonResource
             'slug'    => $this->slug,
             'description'    => $this->description,
             'image'    => setImage($this->image),
-            'technicians'    => TechnicianResource::collection($this->technicians),
+            'technicians'    => TechnicianResource::collection($this->technicians->where('status','active')),
         ];
     }
 }
