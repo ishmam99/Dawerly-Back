@@ -76,7 +76,7 @@ class PaymentController extends Controller
         ])->post($apiURL, $data);
 
         $paymentStatus = $response->json();
-
+            \Log::info('Payment Status:', $paymentStatus);
         if ($paymentStatus['IsSuccess']) {
             // Update your order/payment status in DB
             $user = User::find($paymentStatus['Data']['CustomerReference']);
@@ -103,7 +103,7 @@ class PaymentController extends Controller
             else if($paymentStatus['Data']['InvoiceValue'] == 2){
                 $valid_till  =  Carbon::now()->addDays(30);
             }
-           
+
             // return response()->json($valid_till);
           $technician =  Technician::where('user_id',$user->id)->first();
           $technician->update(['status' => 'active','valid_till'=> $valid_till]);
