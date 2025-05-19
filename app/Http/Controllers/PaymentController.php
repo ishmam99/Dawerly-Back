@@ -88,7 +88,22 @@ class PaymentController extends Controller
                 'payment_type' => $paymentStatus['Data']['InvoiceTransactions'][0]['PaymentGateway'],
                 'payment_status' => $paymentStatus['Data']['InvoiceStatus'],
             ]);
-            $valid_till  = $paymentStatus['Data']['InvoiceValue'] == 10 ? Carbon::now()->addDays(365) : Carbon::now()->addDays(180);
+              $technician =  Technician::where('user_id',$user->id)->first();
+              $valid_till  =  Carbon::now()->addDays(1);
+            if($paymentStatus['Data']['InvoiceValue'] == 15){
+
+                $valid_till  = Carbon::now()->addDays(365);
+            }
+            else if($paymentStatus['Data']['InvoiceValue'] == 9){
+                $valid_till  =  Carbon::now()->addDays(182);
+            }
+            else if($paymentStatus['Data']['InvoiceValue'] == 5){
+                $valid_till  =  Carbon::now()->addDays(90);
+            }
+            else if($paymentStatus['Data']['InvoiceValue'] == 2){
+                $valid_till  =  Carbon::now()->addDays(30);
+            }
+           
             // return response()->json($valid_till);
           $technician =  Technician::where('user_id',$user->id)->first();
           $technician->update(['status' => 'active','valid_till'=> $valid_till]);
