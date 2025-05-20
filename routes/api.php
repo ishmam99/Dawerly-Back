@@ -21,9 +21,9 @@ Route::prefix('v1')->group(
  Route::post('/register', [AuthController::class, 'register']);
         Route::get('/payment-settings', function(){
             return response()->json(['payment'=>true],200);
-        });  
+        });
 
-    Route::post('/login', [AuthController::class, 'login'])->middleware('guest'); // Added middleware('guest') to allow unauthenticated access
+    Route::post('/login', [AuthController::class, 'login'])->middleware('guest'); 
 
     Route::group(['middleware'=>'auth:sanctum'] ,function () {
         Route::post('/logout', [AuthController::class, 'logout']);
